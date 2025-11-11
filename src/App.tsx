@@ -5,6 +5,8 @@ import { useRoutes } from 'react-router-dom'
 import Topbar from './components/topbar/Topbar'
 import Sidebar from './components/sidebar/Sidebar'
 import { ThemeProvider } from "./assets/context/ThemeContext";
+import "leaflet/dist/leaflet.css";
+
 
 export default function App() {
   const router = useRoutes(routs);

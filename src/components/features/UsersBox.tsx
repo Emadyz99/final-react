@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseIcon from "@mui/icons-material/Close";
+import axiosClient from "../../api/axiosClient";
+
+interface Name {
+  firstname: string;
+  lastname: string;
+}
 
 interface User {
   id: number;
-  name: string;
+  name: Name; // توجه: name الان آبجکته
   email: string;
   phone: string;
   avatar: string;
@@ -18,15 +24,12 @@ export default function UsersBox() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch("https://jsonplaceholder.typicode.com/users");
-        const data = await res.json();
-
-        // فقط ۵ کاربر اول + آواتار تصادفی
-        const usersWithAvatar = data.slice(0, 5).map((u: any) => ({
+        const { data } = await axiosClient.get("/users");
+        // فقط ۵ کاربر اول + آواتار
+        const usersWithAvatar: User[] = data.slice(0, 5).map((u: User) => ({
           ...u,
           avatar: `https://i.pravatar.cc/150?img=${u.id}`,
         }));
-
         setUsers(usersWithAvatar);
       } catch (err) {
         console.error("Fetch error:", err);
@@ -61,10 +64,12 @@ export default function UsersBox() {
               <div className="flex items-center gap-3">
                 <img
                   src={user.avatar}
-                  alt={user.name}
+                  alt={`${user.name.firstname} ${user.name.lastname}`}
                   className="w-10 h-10 rounded-full object-cover"
                 />
-                <span className="text-gray-700 font-medium">{user.name}</span>
+                <span className="text-gray-700 font-medium">
+                  {user.name.firstname} {user.name.lastname}
+                </span>
               </div>
 
               <button
@@ -98,11 +103,11 @@ export default function UsersBox() {
             <div className="text-center">
               <img
                 src={selectedUser.avatar}
-                alt={selectedUser.name}
+                alt={`${selectedUser.name.firstname} ${selectedUser.name.lastname}`}
                 className="w-20 h-20 rounded-full mx-auto mb-3"
               />
               <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                {selectedUser.name}
+                {selectedUser.name.firstname} {selectedUser.name.lastname}
               </h3>
               <p className="text-gray-600 text-sm mb-1">
                 📧 {selectedUser.email}
